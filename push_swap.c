@@ -6,7 +6,7 @@
 /*   By: ted-dafi <ted-dafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 09:39:28 by ted-dafi          #+#    #+#             */
-/*   Updated: 2022/02/23 19:01:14 by ted-dafi         ###   ########.fr       */
+/*   Updated: 2022/02/26 17:07:11 by ted-dafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,26 +204,17 @@ int	sorted(t_list *a)
 	return (l);
 }
 
-void	which_which(t_list *a, int *small, int *big)
+void	which_which(t_list *a, int *small, int *big, int size)
 {
-	int	i[2];
 	int	k;
 
 	k = 1;
-	i[0] = a->content;
-	i[1] = -1;
 	while(a)
 	{
-		if (a->content > i[1])
-		{
-			i[1] = a->content;
+		if (a->index == size)
 			*big = k;
-		}
-		if (a->content < i[0])
-		{
-			i[0] = a->content;
+		if (a->index == size - 2)
 			*small = k;
-		}
 		k++;
 		a = a->next;
 	}
@@ -237,7 +228,7 @@ void	sort_t(t_stack *all, int size)
 		swap(&all->a, "sa\n");
 	else
 	{
-		which_which(all->a, &i[0], &i[1]);
+		which_which(all->a, &i[0], &i[1], size);
 		if (i[0] == 1 && i[1] == 2)
 		{
 			reverse_rotate(&all->a, "rra\n");
@@ -257,58 +248,103 @@ void	sort_t(t_stack *all, int size)
 	}
 }
 
-void	sort_f(t_stack *all, int size)
-{
-	while(size != 3)
-	{
-		push(all, 1, "pb\n");
-		size--;
-	}
-	sort_t(all, 3);
-	push(all, 0, "pa\n");
-	// if (!sorted(all->a))
-	// 	sort_t
-	// if (all->b)
-	// 	push(all, 0, "pa\n");
-	// else
-		exit(0);
-	
-}
-
-void	swap_arr(int *a, int *b)
-{
-	*a ^= *b;	
-	*b ^= *a;	
-	*a ^= *b;	
-}
-
-void	that_arr(t_stack *all, int size)
+int	min(t_list	*a, int n)
 {
 	int	i;
-	int	j;
+
+	i = 1;
+	while(a)
+	{
+		if (a->index == n)
+			break ;
+		i++;
+		a = a->next;
+	}
+	return (i);
+}
+
+void	sort_f(t_stack *all, int size)
+{
+	int	n;
+
+	n = 1;
+	while(size - n >= 3)
+	{
+		if (all->a->index == n)
+		{
+			push(all, 1, "pb\n");
+			n++;
+		}
+		else
+		{
+			if (min(all->a, n) <= size / 2)
+				rotate(&all->a, "ra\n");
+			else
+				reverse_rotate(&all->a, "rra\n");
+		}
+	}
+	if (!sorted(all->a))
+		sort_t(all, size);
+	while(n - 1)
+	{
+		push(all, 0, "pa\n");
+		n--;
+	}
+}
+int		still_there(t_list	*a)
+{
+	while(a)
+	{
+		if (a->index == -1)
+			return (a->content);
+		a = a->next;	
+	}
+	return (0);
+}
+
+int	get_min(int	*i, t_list *a)
+{
+	t_list	*temp;
+	int		k;
+
+	temp = a;
+	while (a)
+	{
+		if (a->index == -1)
+			k = a->content;
+		a = a->next;
+	}
+	a = temp;
+	while(a)
+	{
+		if (k > a->content && a->index == -1)
+			k = a->content;
+		a = a->next;
+	}
+	return (k);
+}
+
+void	sort_index(t_list *a, int size)
+{
+	int		i;
+	int		k;
 	t_list	*temp;
 
 	i = 1;
-	all->sorted = (int *)malloc(sizeof(int) * (size + 1));
-	all->sorted[0] = size + 1;
-	temp = all->a;
-	while(temp)
+	temp = a;
+	while(still_there(a))
 	{
-		all->sorted[i] = temp->content;
-		i++;
-		temp = temp->next;
-	}
-	i = 1;
-	while(i < size)
-	{
-		j = 0;
-		while(j < size - i)
+		if (i < size)
+			k = get_min(&i, a);
+		else
+			k =	still_there(a); 
+		while (a)
 		{
-			if (all->sorted[i] > all->sorted[i + 1])
-				swap_arr(&all->sorted[i], &all->sorted[i + 1]);
-			j++;
+			if (a->content == k)
+				a->index = i++;
+			a = a->next;
 		}
-		i++;
+		a = temp;	
 	}
 }
 
@@ -316,9 +352,11 @@ void	ft_sort(t_stack	*all)
 {
 	int	size;
 	size = ft_lstsize(all->a);
+	sort_index(all->a, size);
 	if (size <= 3)
 		sort_t(all, size);
-	that_arr(all, size);
+	else
+		sort_f(all, size);
 }
 int	main(int ac, char **av)
 {
@@ -328,16 +366,10 @@ int	main(int ac, char **av)
 	if (sorted(all.a))
 		return (0);
 	ft_sort(&all);
-	while(all.a)
-	{
-		printf("%d\n", all.a->content);
-		all.a = all.a->next;
-	}
-	printf("----------\n");
-	int i = 1;
-	while(i < all.sorted[0])
-	{
-		printf("%d\n", all.sorted[i]);
-		i++;
-	}
+	// while(all.a)
+	// {
+	// 	printf("number: %d and ", all.a->content);
+	// 	printf("index: %d\n", all.a->index);
+	// 	all.a = all.a->next;
+	// }
 }
