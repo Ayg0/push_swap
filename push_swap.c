@@ -6,7 +6,7 @@
 /*   By: ted-dafi <ted-dafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 20:40:49 by ted-dafi          #+#    #+#             */
-/*   Updated: 2022/03/05 14:03:40 by ted-dafi         ###   ########.fr       */
+/*   Updated: 2022/03/05 15:11:34 by ted-dafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,10 @@ void	sort_it(t_all *all)
 	int	j;
 
 	i = 1;
-	while (i < all->sorted[0] - 1)
+	while (i < all->sorted[0])
 	{
 		j = 1;
-		while(j < all->sorted[0] - i - 1)
+		while(j < all->sorted[0] - i + 1)
 		{
 			if (all->sorted[j] > all->sorted[j + 1])
 			{
@@ -131,7 +131,7 @@ void	is_it_sorted(int *a)
 	exit(0);
 }
 
-void	swap(int *a)
+void	swap(int *a, char *s)
 {
 	if (a[0] > 1)
 	{
@@ -139,9 +139,11 @@ void	swap(int *a)
 		a[2] ^= a[1];	
 		a[1] ^= a[2];	
 	}
+	if (s)
+		write(1, s, ft_strlen(s));
 }
 
-void	reverse_rotate(int *a)
+void	reverse_rotate(int *a, char *s)
 {
 	int	k;
 	int	i;
@@ -154,9 +156,11 @@ void	reverse_rotate(int *a)
 		i--;
 	}
 	a[1] = k;
+	if (s)
+		write(1, s, ft_strlen(s));
 }
 
-void	rotate(int *a)
+void	rotate(int *a, char *s)
 {
 	int	k;
 	int	i;
@@ -169,9 +173,11 @@ void	rotate(int *a)
 		i++;
 	}
 	a[i] = k;
+	if (s)
+		write(1, s, ft_strlen(s));
 }
 
-void	push(int *from, int *to)
+void	push(int *from, int *to, char *s)
 {
 	int	i;
 
@@ -192,6 +198,8 @@ void	push(int *from, int *to)
 		i++;
 	}	
 	from[0]--;
+	if (s)
+		write(1, s, ft_strlen(s));
 }
 
 
@@ -223,12 +231,49 @@ void	make_stack(int ac, char **av, t_all	*all)
 	make_sorted(all);
 }
 
-void	sort_t();
+void	which_which(t_all *all, int *small, int *big)
+{
+	int	i;
 
-void	sort_it(t_all *all)
+	i = 1;
+	while (i < all->a[0] + 1)
+	{
+		if (all->a[i] == all->sorted[1])
+			*small = i;
+		else if (all->a[i] == all->sorted[3])
+			*big = i;
+		i++;
+	}
+}
+
+void	sort_t(t_all *all)
+{
+	int	i[2];
+	if (all->a[0] == 2)
+		return (swap(all->a, "sa\n"));
+	which_which(all, &i[0], &i[1]);
+	if (i[0] == 1 && i[1] == 2)
+	{
+		reverse_rotate(all->a, "rra\n");
+		swap(all->a, "sa\n");
+	}
+	else if (i[0] == 2 && i[1] == 3)
+		swap(all->a, "sa\n");	
+	else if (i[0] == 3 && i[1] == 1)
+	{
+		rotate(all->a, "ra\n");
+		swap(all->a, "sa\n");
+	}
+	else if (i[0] == 2 && i[1] == 1)
+		rotate(all->a, "ra\n");
+	else
+		reverse_rotate(all->a, "rra\n");
+}
+
+void	sort_that(t_all *all)
 {
 	if (all->a[0] <= 3)
-		sort_t(all->a);
+		sort_t(all);
 }
 
 int	main(int ac, char **av)
@@ -236,20 +281,20 @@ int	main(int ac, char **av)
 	t_all	all;
 
 	make_stack(ac, av, &all);
-	/*push(all.a, all.b);
-	push(all.a, all.b);
-	int	i = 0;
-	while(i < all.a[0] + 1)
-	{
-		printf("%d\n", all.a[i]);
-		i++;
-	}
-	i = 0;
-	printf("B:\n");
-	while(i < all.b[0] + 1)
-	{
-		printf("%d\n", all.b[i]);
-		i++;
-	}*/
-	sort_it(&all);
+	// push(all.a, all.b);
+	// push(all.a, all.b);
+	// int	i = 0;
+	// while(i < all.sorted[0] + 1)
+	// {
+	// 	printf("%d\n", all.sorted[i]);
+	// 	i++;
+	// }
+	// i = 0;
+	// printf("B:\n");
+	// while(i < all.b[0] + 1)
+	// {
+	// 	printf("%d\n", all.b[i]);
+	// 	i++;
+	// }
+	sort_that(&all);
 }
