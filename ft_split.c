@@ -6,13 +6,13 @@
 /*   By: ted-dafi <ted-dafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 09:04:35 by ted-dafi          #+#    #+#             */
-/*   Updated: 2022/02/23 17:55:31 by ted-dafi         ###   ########.fr       */
+/*   Updated: 2022/03/04 21:18:39 by ted-dafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-static size_t	tha_nambar(char const *s, char c)
+static size_t	tha_nambar(char *s, char c)
 {
 	size_t	i;
 
@@ -30,7 +30,7 @@ static size_t	tha_nambar(char const *s, char c)
 	return (i);
 }
 
-static char	*ft_look_for(const char *s, int c)
+static char	*ft_look_for(char *s, int c)
 {
 	while (*s)
 	{
@@ -52,7 +52,7 @@ static void	why_r_ya_running(char **d, int i)
 	free(d);
 }
 
-static void	doo_it(char **da, char const *from, char c)
+static void	doo_it(char **da, char *from, char c)
 {
 	size_t	w;
 	int		i;
@@ -79,7 +79,7 @@ static void	doo_it(char **da, char const *from, char c)
 	}
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split(char *s, char c)
 {
 	char	**p;
 
