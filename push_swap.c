@@ -101,7 +101,9 @@ void	make_sorted(t_all *all)
 	int	j;
 
 	i = 0;
-	all->sorted = (int *)ft_calloc(all->a[0] + 1, sizeof(int));
+    if (all->sorted)
+        free(all->sorted);
+    all->sorted = (int *)ft_calloc(all->a[0] + 1, sizeof(int));
 	while(i < all->a[0] + 1)
 	{
 		all->sorted[i] = all->a[i];
@@ -117,7 +119,7 @@ void	make_sorted(t_all *all)
 	sort_it(all);
 }
 
-void	is_it_sorted(int *a)
+int	is_it_sorted(int *a)
 {
 	int	i;
 
@@ -125,10 +127,10 @@ void	is_it_sorted(int *a)
 	while(i < a[0])
 	{
 		if (a[i] > a[i + 1])
-			return ;
+			return (0);
 		i++;
 	}
-	exit(0);
+    return (1);
 }
 
 void	swap(int *a, char *s)
@@ -227,7 +229,9 @@ void	make_stack(int ac, char **av, t_all	*all)
 		}
 		i++;
 	}
-	is_it_sorted(all->a);
+	if (is_it_sorted(all->a))
+        exit(0);
+    all->sorted = NULL;
 	make_sorted(all);
 }
 
@@ -270,10 +274,95 @@ void	sort_t(t_all *all)
 		reverse_rotate(all->a, "rra\n");
 }
 
+int	*make_temp(t_all *all)
+{
+	int	i;
+	int	*temp;
+
+	temp = ft_calloc(all->a[0] + 1, sizeof(int));
+	i = 0;
+	while (i <= all->a[0])
+	{
+		temp[i] = all->a[i];
+		i++;
+	}
+	return (temp);
+}
+
+int direct(t_all *all)
+{
+    int i;
+	int	*temp;
+
+	i = 0;
+	temp = make_temp(all);
+	while (temp[1] != all->sorted[1] && temp[1] != all->sorted[2])
+	{
+		rotate(temp, NULL);
+		i++;
+	}
+	free(temp);
+	return (i < (all->a[0] / 2) - 1);
+}
+
+void    sort_ff(t_all *all)
+{
+    while(all->a[1] != all->sorted[1])
+        rotate(all->a, "ra\n");
+    if (is_it_sorted(all->a))
+        exit(0);
+    push(all->a, all->b, "pb\n");
+    if (!is_it_sorted(all->a))
+    {
+        make_sorted(all);
+        sort_t(all);
+    }
+    push(all->b, all->a, "pa\n");
+}
+
+void	sort_thee(t_all *all)
+{
+	int	i;
+
+	i = 2;
+	while (i)
+	{
+		if (all->a[1] == all->sorted[1] || all->a[1] == all->sorted[2])
+		{
+			push(all->a, all->b, "pb\n");
+			i--;
+			if (!i)
+				break ;
+		}
+		if (direct(all))
+			rotate(all->a, "ra\n");
+		else
+			reverse_rotate(all->a, "rra\n");
+	}
+	if (is_it_sorted(all->b))
+		swap(all->b, "sb\n");
+    if (!is_it_sorted(all->a))
+    {
+        make_sorted(all);
+        sort_t(all);
+    }
+    push(all->b, all->a, "pa\n");
+    push(all->b, all->a, "pa\n");
+}
+
+void	sort_f(t_all *all)
+{
+    if (all->a[0] == 4)
+        sort_ff(all);
+	sort_thee(all);
+}
+
 void	sort_that(t_all *all)
 {
 	if (all->a[0] <= 3)
 		sort_t(all);
+	else if (all->a[0] <= 5)
+		sort_f(all);
 }
 
 int	main(int ac, char **av)
