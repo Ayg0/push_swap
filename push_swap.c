@@ -6,7 +6,7 @@
 /*   By: ted-dafi <ted-dafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 20:40:49 by ted-dafi          #+#    #+#             */
-/*   Updated: 2022/03/05 15:11:34 by ted-dafi         ###   ########.fr       */
+/*   Updated: 2022/03/13 14:49:32 by ted-dafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ void	push(int *from, int *to, char *s)
 	{
 		from[i] = from[i + 1];
 		i++;
-	}	
+	}
 	from[0]--;
 	if (s)
 		write(1, s, ft_strlen(s));
@@ -289,14 +289,14 @@ int	*make_temp(t_all *all)
 	return (temp);
 }
 
-int direct(t_all *all)
+int direct(t_all *all, int j)
 {
     int i;
 	int	*temp;
 
 	i = 0;
 	temp = make_temp(all);
-	while (temp[1] != all->sorted[1] && temp[1] != all->sorted[2])
+	while (temp[1] != all->sorted[1] && (temp[1] != all->sorted[2] || j))
 	{
 		rotate(temp, NULL);
 		i++;
@@ -324,7 +324,7 @@ void	sort_thee(t_all *all)
 {
 	int	i;
 
-	i = 2;
+	i = all->a[0] - 3;
 	while (i)
 	{
 		if (all->a[1] == all->sorted[1] || all->a[1] == all->sorted[2])
@@ -334,7 +334,7 @@ void	sort_thee(t_all *all)
 			if (!i)
 				break ;
 		}
-		if (direct(all))
+		if (direct(all, 0))
 			rotate(all->a, "ra\n");
 		else
 			reverse_rotate(all->a, "rra\n");
@@ -353,16 +353,94 @@ void	sort_thee(t_all *all)
 void	sort_f(t_all *all)
 {
     if (all->a[0] == 4)
-        sort_ff(all);
+        return (sort_ff(all));
 	sort_thee(all);
+}
+
+int	get_index(t_all *all, int value)
+{
+	int	i;
+
+	i = 1;
+	while (i < all->sorted[0])
+	{
+		if (all->sorted[i] == value)
+			return (i);
+		i++;
+	}
+	return (-1);	
+}
+
+void	print_multi(char c1, char c2)
+{
+	static char s[5];
+	int	i;
+	
+	s[4]++;
+	s[0] = s[0] * (s[0] != 0) + c1 * (s[4] == 1);
+	s[1] = s[1] * (s[1] != 0) + c2 * (s[4] == 1);
+	s[2] = s[2] * (s[0] != 0) + c1 * (s[4] == 2);
+	s[3] = s[3] * (s[0] != 0) + c2 * (s[4] == 2);
+	if (s[0] && s[2])
+	{
+		if (s[1] != s[3] && s[0] == s[2] && s[0] != 'p')
+			ft_printf("%c%c\n", s[0], s[0]);
+		else if (s[3] != 'k')
+			ft_printf("%c%c\n%c%c\n", s[0], s[1], s[2], s[3]);
+		else
+			ft_printf("%c%c\n", s[0], s[1]);
+		i = 0;
+		while (i < 5)
+			s[i++] = 0;
+	}
+}
+
+void	from_a_to_b(t_all *all, int start, int end)
+{
+	while (all->a[0])
+	{
+		end += offseti * (all->a[0] + offseti == all->sorted[0]) + all->sorted[0] * (all->a[0] + offseti > all->sorted[0]);
+		start -= end - middli * (end >= middli) + start * (end < middli);
+		if (end - (start + get_index(all, all->a[1])) > 0)
+		{
+			push(all->a, all->b, NULL);
+			print_multi('p', 'a');
+			if (get_index(all, all->b[1]) > middli)
+			{
+				rotate(all->b, NULL);
+				print_multi('r', 'b');
+			}
+		}
+		else
+		{
+			rotate(all->a, NULL);
+			print_multi('r', 'a');
+		}
+	}
+}
+
+void	just_sort(t_all *all)
+{
+	int	start;
+	int	end;
+
+	all->offset = (all->a[0] <= 150) * (all->a[0] / 8) 
+			+ (all->a[0] > 150) * (all->a[0] / 13);
+	all->middle = all->sorted[0] / 2;
+	start = (middli - offseti) * (middli >= offseti);
+	end = (middli + offseti) * (middli + offseti <= all->sorted[0]) +
+		all->sorted[0] * (middli + offseti > all->sorted[0]); 
+	from_a_to_b(all, start, end);
 }
 
 void	sort_that(t_all *all)
 {
-	if (all->a[0] <= 3)
-		sort_t(all);
-	else if (all->a[0] <= 5)
-		sort_f(all);
+	// if (all->a[0] <= 3)
+	// 	sort_t(all);
+	// else if (all->a[0] <= 5)
+	// 	sort_f(all);
+	// else
+	just_sort(all);
 }
 
 int	main(int ac, char **av)
@@ -378,12 +456,12 @@ int	main(int ac, char **av)
 	// 	printf("%d\n", all.sorted[i]);
 	// 	i++;
 	// }
-	// i = 0;
+	sort_that(&all);
+	// int i = 0;
 	// printf("B:\n");
 	// while(i < all.b[0] + 1)
 	// {
 	// 	printf("%d\n", all.b[i]);
 	// 	i++;
 	// }
-	sort_that(&all);
 }

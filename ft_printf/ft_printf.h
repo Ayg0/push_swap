@@ -1,39 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push_swap.h                                        :+:      :+:    :+:   */
+/*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ted-dafi <ted-dafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/04 21:07:42 by ted-dafi          #+#    #+#             */
-/*   Updated: 2022/03/13 13:14:05 by ted-dafi         ###   ########.fr       */
+/*   Created: 2021/11/30 11:18:31 by ted-dafi          #+#    #+#             */
+/*   Updated: 2021/12/01 14:16:59 by ted-dafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PUSH_SWAP_H
-# define PUSH_SWAP_H
-
+#ifndef FT_PRINTF_H
+# define FT_PRINTF_H
+# include <stdarg.h>
 # include <unistd.h>
-# include <stdio.h>
 # include <stdlib.h>
-# include "ft_printf/ft_printf.h"
 
-#define middli all->middle
-#define offseti all->offset
+void	ft_putnbr_base(unsigned long a, unsigned long len, char *s);
+int		print_hex(unsigned long p, int pointer, int big);
+int		check_and_print(char s, va_list p);
+int		ft_printf(const char *s, ...);
+int		printnum(int c);
+int		flag_up(char *s, int a, int flag);
 
-typedef struct s_all
-{
-	int	*a;
-	int	*b;
-	int	*sorted;
-	int	offset;
-	int	middle;
-}	t_all;
-
-
-char	**ft_split(char *s, char c);
-void	*ft_calloc(size_t count, size_t size);
-int		ft_strlen(char *s);
-size_t	ft_strlcpy(char *dest, char *src, size_t size);
-int		ft_atoi(const char *str);
 #endif
