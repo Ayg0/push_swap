@@ -1,4 +1,4 @@
-CC = cc -g
+CC = cc -g -fsanitize=address
 NAME = push_swap
 
 SRCS = ft_atoi.c push_swap.c ft_split.c ft_printf/ft_printf.c ft_printf/printf_utils.c

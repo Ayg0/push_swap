@@ -6,7 +6,7 @@
 /*   By: ted-dafi <ted-dafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/04 20:40:49 by ted-dafi          #+#    #+#             */
-/*   Updated: 2022/03/13 14:49:32 by ted-dafi         ###   ########.fr       */
+/*   Updated: 2022/03/17 18:06:52 by ted-dafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,8 +151,8 @@ void	reverse_rotate(int *a, char *s)
 	int	i;
 
 	k = a[a[0]];
-	i = a[0] + 1;
-	while(i > 1)
+	i = a[0];
+	while(i >= 1)
 	{
 		a[i] = a[i - 1];
 		i--;
@@ -185,7 +185,6 @@ void	push(int *from, int *to, char *s)
 
 	if (!(from[0] > 0))
 		return ;
-	to[0]++;
 	i = to[0] + 1;
 	while(i > 1)
 	{
@@ -202,8 +201,8 @@ void	push(int *from, int *to, char *s)
 	from[0]--;
 	if (s)
 		write(1, s, ft_strlen(s));
+	to[0]++;
 }
-
 
 void	make_stack(int ac, char **av, t_all	*all)
 {
@@ -280,12 +279,9 @@ int	*make_temp(t_all *all)
 	int	*temp;
 
 	temp = ft_calloc(all->a[0] + 1, sizeof(int));
-	i = 0;
-	while (i <= all->a[0])
-	{
+	i = -1;
+	while (++i <= all->a[0])
 		temp[i] = all->a[i];
-		i++;
-	}
 	return (temp);
 }
 
@@ -357,111 +353,335 @@ void	sort_f(t_all *all)
 	sort_thee(all);
 }
 
-int	get_index(t_all *all, int value)
+int	get_index(int *stack, int value, t_all *all)
 {
 	int	i;
 
 	i = 1;
-	while (i < all->sorted[0])
+	while (i <= stack[0])
 	{
-		if (all->sorted[i] == value)
+		if (stack[i] == value)
 			return (i);
 		i++;
 	}
 	return (-1);	
 }
 
-void	print_multi(char c1, char c2)
+
+int	cases_of_multi(char *s)
 {
-	static char s[5];
 	int	i;
-	
-	s[4]++;
-	s[0] = s[0] * (s[0] != 0) + c1 * (s[4] == 1);
-	s[1] = s[1] * (s[1] != 0) + c2 * (s[4] == 1);
-	s[2] = s[2] * (s[0] != 0) + c1 * (s[4] == 2);
-	s[3] = s[3] * (s[0] != 0) + c2 * (s[4] == 2);
-	if (s[0] && s[2])
+	int	j;
+
+	i = 0;
+	if (s[0] == s[4] && s[0] != 'p' && s[1] != 'r' && s[1] != s[5])
+		ft_printf("%c%c\n", s[0], s[0]);
+	else if (s[0] == s[4] && s[0] != 'p' && s[1] == s[5] && s[1] == 'r' && s[2] != s[6])
+		ft_printf("rrr\n");
+	else
+		ft_printf("%s\n%s\n", s, s + 4);
+	return (1);
+}
+
+void	print_multi(char *s2)
+{
+	static char s[9];
+	char	s3[9];
+	int	i;
+	int	l;
+
+	s[8]++;
+	l = 0;
+	s[0] += s2[0] * (s[8] == 1);
+	s[1] += s2[1] * (s[8] == 1);
+	s[2] += s2[2] * (s[8] == 1);
+	s[4] += s2[0] * (s[8] == 2);
+	s[5] += s2[1] * (s[8] == 2);
+	s[6] += s2[2] * (s[8] == 2);
+	if (s2[0] == 'k')
+		l = s[0] && (s[0] != 'k' && ft_printf("%s\n", s));
+	else if (s[0] && s[4])
 	{
-		if (s[1] != s[3] && s[0] == s[2] && s[0] != 'p')
-			ft_printf("%c%c\n", s[0], s[0]);
-		else if (s[3] != 'k')
-			ft_printf("%c%c\n%c%c\n", s[0], s[1], s[2], s[3]);
-		else
-			ft_printf("%c%c\n", s[0], s[1]);
-		i = 0;
-		while (i < 5)
-			s[i++] = 0;
+		i = -1;
+		while (++i < 9)
+			s3[i] = s[i];
+		l = cases_of_multi(s3);
 	}
+	i = 0;
+	while (i < 9 && l)
+		s[i++] = 0;
+}
+
+void	btata(t_all *all, int *down)
+{
+	if (*down == 0 || all->b[1] > all->a[all->a[0]])
+	{
+		push(all->b, all->a, NULL);
+		print_multi("pa");
+		if (all->a[1] != all->sorted[all->sorted[0]])
+		{
+			rotate(all->a, NULL);
+			print_multi("ra");
+			(*down)++;
+		}
+	}
+	else
+	{
+		rotate(all->b, NULL);
+		print_multi("rb");
+	}
+}
+
+int	play_with_values(t_all *all, int *start, int *end)
+{
+	*start = (*start - offseti) * (*start - offseti >= 1) + 1 * ( *start - offseti < 1);
+	*end = (*end + offseti) * (*end + offseti <= all->sorted[0]) +
+			all->sorted[0] * (*end + offseti > all->sorted[0]);
+	return (1);
 }
 
 void	from_a_to_b(t_all *all, int start, int end)
 {
+	int	i;
+
+	i = 1;
 	while (all->a[0])
 	{
-		end += offseti * (all->a[0] + offseti == all->sorted[0]) + all->sorted[0] * (all->a[0] + offseti > all->sorted[0]);
-		start -= end - middli * (end >= middli) + start * (end < middli);
-		if (end - (start + get_index(all, all->a[1])) > 0)
+		if (all->a[1] >= all->sorted[start] && all->a[1] <= all->sorted[end])
 		{
 			push(all->a, all->b, NULL);
-			print_multi('p', 'a');
-			if (get_index(all, all->b[1]) > middli)
+			print_multi("pb");
+			if (all->b[1] < all->sorted[middli] && all->b[0] > 1)
 			{
 				rotate(all->b, NULL);
-				print_multi('r', 'b');
+				print_multi("rb");
 			}
+			i++;
 		}
 		else
 		{
 			rotate(all->a, NULL);
-			print_multi('r', 'a');
+			print_multi("ra");
+		}
+		(i == end - start) && play_with_values(all, &start, &end);
+	}
+}
+
+// void	from_b_to_a(t_all *all)
+// {
+	// int	down;
+	// int	i[3];
+
+	// down = 0;
+	// i[2] = 1;
+	// while (all->b[0])
+	// {
+	// 	if (i[2] == 1)
+	// 		i[1] = get_index(all->b, all->sorted[all->sorted[0]], i);
+	// 	if (i[1] != 0)
+	// 	{
+	// 		if (all->b[1] == all->sorted[all->sorted[0]])
+	// 		{
+	// 			push(all->b, all->a, NULL);
+	// 			print_multi("pa");
+	// 			all->sorted[0]--;
+	// 			i[2] = 1;
+	// 		}
+	// 		else if (down == 0 || all->b[1] > all->a[all->a[0]])
+	// 		{
+	// 			push(all->b, all->a, NULL);
+	// 			print_multi("pa");
+	// 			if (all->a[0] > 1)
+	// 			{
+	// 				rotate(all->a, NULL);
+	// 				print_multi("ra");
+	// 			}
+	// 			down++;
+	// 			i[2] = 0;
+	// 		}
+	// 		else
+	// 		{
+	// 			if (i[1] > 0)
+	// 			{
+	// 				rotate(all->b, NULL);
+	// 				print_multi("rb");
+	// 				i[1]--;
+	// 			}
+	// 			else if (i[1] < 0)
+	// 			{
+	// 				reverse_rotate(all->b, NULL);
+	// 				print_multi("rrb");
+	// 				i[1]++;
+	// 			}
+	// 			i[2] = 0;
+	// 		}
+	// 	}
+	// 	else if (all->a[0] > 1)
+	// 	{
+	// 			reverse_rotate(all->a, NULL);
+	// 			print_multi("rra");
+	// 			down--;
+	// 			all->sorted[0]--;
+	// 			i[2] = 1;
+	// 	}
+	// 	if (all->sorted[0] - 1 < 1)
+	// 		all->sorted[0] = 1;
+	// }	
+// }
+
+// void	from_b_to_a(t_all *all)
+// {
+// 	int	down;
+// 	int	i[3];
+
+// 	i[0] = 1;
+// 	int j = 0;
+// 	down = 0;
+// 	while (all->b[0])
+// 	{
+// 		i[1] = get_index(all->b, all->sorted[all->sorted[0]], i, all);
+// 		if (i[1] != 0)
+// 		{
+// 			if (all->b[1] == all->sorted[all->sorted[0]])
+// 			{
+// 				push(all->b, all->a, NULL);
+// 				print_multi("pa");
+// 				i[0] = 1;
+// 			}
+// 			else if (down == 0 && all->b[1] > all->a[all->a[0]])
+// 			{
+// 				push(all->b, all->a, NULL);
+// 				print_multi("pa");
+// 				rotate(all->a, NULL);
+// 				print_multi("ra");
+// 				down++;
+// 				i[1] -= -1 * (i[1] < 0) + 1 * (i[1] >= 0);
+// 				i[0] = 0;
+// 			}
+// 			else
+// 			{
+// 				if (i > 0)
+// 				{
+// 					rotate(all->b, NULL);
+// 					print_multi("rb");
+// 					i[1]--;
+// 				}
+// 				else
+// 				{
+// 					reverse_rotate(all->b, NULL);
+// 					print_multi("rrb");
+// 					i[1]++;
+// 				}
+// 			}
+// 		}
+// 		else if (all->a[0] > 1)
+// 		{
+// 			reverse_rotate(all->a, NULL);
+// 			print_multi("rra");
+// 			down--;
+// 			i[0] = 1;
+// 			all->sorted[0]--;
+// 		}
+// 		if (all->sorted[0] <= 0)
+// 			all->sorted[0] = 1;
+// 	}
+	// printf("all->a[0]: %d\n", all->a[0]);
+	// printf("i[1]: %d\n", i[1]);
+	// printf("i[0]: %d\n", i[0]);
+	// printf("all->b[0]: %d\n", all->b[0]);
+	// printf("all->sorted[0]: %d\n", all->sorted[0]);
+	// printf("all->sorted[all->sorted[0]]: %d\n", all->sorted[all->sorted[0]]);
+	// printf("down: %d\n", down);
+	// j = 0;
+	// printf("B:\n");
+	// while (j < all->b[0] + 1)
+	// 	printf("%d\n", all->b[j++]);
+	// j = 0;
+	// printf("a:\n");
+	// while (j < all->a[0] + 1)
+	// 	printf("%d\n", all->a[j++]);
+	// j = 0;
+	// printf("sorted:\n");
+	// while (j < all->sorted[0] + 1)
+	// 	printf("%d\n", all->sorted[j++]);
+// }
+
+void	from_b_to_a(t_all *all)
+{
+	int	down;
+	int	k[4];
+	int j;
+
+	down = 0;
+	k[0] = 1;
+	k[2] = 0;
+	while (all->b[0] || down)
+	{
+		k[1] = get_index(all->b, all->sorted[all->sorted[0]], all);
+		if (all->b[1] == all->sorted[all->sorted[0]])
+		{
+			push(all->b, all->a, NULL);
+			print_multi("pa");
+			all->sorted[0]--;
+		}
+		else if (k[1] != -1)
+		{
+			if (k[1] >= all->b[0] / 2)
+			{
+				k[1] = k[1] - (all->b[0] + 1); // ymkan malay9a l ta la3ba gha khaliha db
+				reverse_rotate(all->b, NULL);
+				print_multi("rrb");
+				k[1]++; // ymkan malay9a l ta la3ba gha khaliha db
+			}
+			else if (k[1] < all->b[0] / 2)
+			{
+				btata(all, &down);
+				k[1]--; // ymkan malay9a l ta la3ba gha khaliha db
+			}
+		}
+		else if (all->a[0] > 1 && down > 0)
+		{
+			reverse_rotate(all->a, NULL);
+			print_multi("rra");
+			all->sorted[0]--;
+			down--;
 		}
 	}
 }
+
 
 void	just_sort(t_all *all)
 {
 	int	start;
 	int	end;
 
-	all->offset = (all->a[0] <= 150) * (all->a[0] / 8) 
-			+ (all->a[0] > 150) * (all->a[0] / 13);
+	if (all->a[0] <= 50)
+		all->offset = all->a[0] / 4;
+	else
+		all->offset = (all->a[0] <= 150) * (all->a[0] / 8) 
+			+ (all->a[0] > 150) * (all->a[0] / 20);
 	all->middle = all->sorted[0] / 2;
-	start = (middli - offseti) * (middli >= offseti);
-	end = (middli + offseti) * (middli + offseti <= all->sorted[0]) +
-		all->sorted[0] * (middli + offseti > all->sorted[0]); 
+	start = middli - offseti;
+	end =  middli + offseti;
 	from_a_to_b(all, start, end);
+	from_b_to_a(all);
+	print_multi("kk");
 }
 
 void	sort_that(t_all *all)
 {
-	// if (all->a[0] <= 3)
-	// 	sort_t(all);
-	// else if (all->a[0] <= 5)
-	// 	sort_f(all);
-	// else
-	just_sort(all);
+	if (all->a[0] <= 3)
+		sort_t(all);
+	else if (all->a[0] <= 5)
+		sort_f(all);
+	else
+		just_sort(all);
 }
 
 int	main(int ac, char **av)
 {
 	t_all	all;
-
+	static char s[4];
 	make_stack(ac, av, &all);
-	// push(all.a, all.b);
-	// push(all.a, all.b);
-	// int	i = 0;
-	// while(i < all.sorted[0] + 1)
-	// {
-	// 	printf("%d\n", all.sorted[i]);
-	// 	i++;
-	// }
 	sort_that(&all);
-	// int i = 0;
-	// printf("B:\n");
-	// while(i < all.b[0] + 1)
-	// {
-	// 	printf("%d\n", all.b[i]);
-	// 	i++;
-	// }
 }
