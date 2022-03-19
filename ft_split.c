@@ -6,7 +6,7 @@
 /*   By: ted-dafi <ted-dafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 09:04:35 by ted-dafi          #+#    #+#             */
-/*   Updated: 2022/03/04 21:18:39 by ted-dafi         ###   ########.fr       */
+/*   Updated: 2022/03/19 23:20:24 by ted-dafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,10 @@ static char	*ft_look_for(char *s, int c)
 	return ((char *)s);
 }
 
-static void	why_r_ya_running(char **d, int i)
+void	why_r_ya_running(char **d, int i)
 {
 	while (i >= 0)
-	{
-		free(*d);
-		d++;
-		i--;
-	}
+		free(d[i--]);
 	free(d);
 }
 
@@ -84,7 +80,7 @@ char	**ft_split(char *s, char c)
 	char	**p;
 
 	if (!s || !ft_strlen(s))
-		exit(write(2, "error\n", 7));
+		exit(write(2, "Error\n", 7));
 	p = (char **)ft_calloc((tha_nambar(s, c) + 1), sizeof(char *));
 	if (!p)
 		return (NULL);
