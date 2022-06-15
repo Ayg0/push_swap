@@ -6,7 +6,7 @@
 /*   By: ted-dafi <ted-dafi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/18 14:32:00 by ted-dafi          #+#    #+#             */
-/*   Updated: 2022/03/19 12:06:47 by ted-dafi         ###   ########.fr       */
+/*   Updated: 2022/06/15 12:02:22 by ted-dafi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,6 @@ void	just_sort(t_all *all)
 	start = all->middle - all->offset;
 	end = all->middle + all->offset;
 	from_a_to_b(all, start, end);
-	from_b_to_a(all);
+	//from_b_to_a(all);
 	print_multi("kk");
 }
